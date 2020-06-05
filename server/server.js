@@ -1,8 +1,11 @@
 const fastify = require('fastify');
 const faker = require('faker');
+const cors = require('fastify-cors')
 
 const PORT = 8099;
 const server = fastify({ logger: true });
+
+server.register(cors, { origin: true });
 
 function createUser(minAge, maxAge) {
   return {
