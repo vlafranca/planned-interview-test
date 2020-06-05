@@ -28,3 +28,4 @@ Make sure you have node 12+ installed
 - Retrieve users from the 3 endpoints when clicking the "Retrieve Users" button
 - Order the users from the 3 collections by name ascending followed by the age descending
 - Implement a filter for the age based on the min and max values of the inputs
+- We recommend using the `styled-components` library to style your components
