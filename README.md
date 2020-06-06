@@ -13,6 +13,8 @@ Tony Z - 21
 
 The design of your project should match the below image. You will find the necessary assets in the public folder of the project.
 
+![alt text](https://github.com/entr-engineering/interview-test/blob/master/public/design.png)
+
 ## Run the project
 
 Make sure you have node 12+ installed
