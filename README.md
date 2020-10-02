@@ -27,6 +27,8 @@ Make sure you have node 12+ installed
 - http://localhost/users/adults
 - http://localhost/users/seniors
 
+**(do not modify those endpoints)
+
 ## Tasks
 
 - Retrieve users from the 3 endpoints when clicking the "Retrieve Users" button
