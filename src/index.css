@@ -1,0 +1,87 @@
+body {
+  margin: 0;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  font-family: sans-serif;
+}
+.App {
+  height: 100%;
+  padding-top: 64px;
+  margin: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 860px;
+  height: 100%;
+  margin-top: 15px;
+}
+
+.filter-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.box {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.col-layout {
+  display: flex;
+  gap: 20px;
+}
+
+.col-2 {
+  width: 33%;
+}
+
+.col-3 {
+  flex: 1;
+}
+
+.sticky-bar {
+  position: fixed;
+  top: 0;
+  height: 64px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: white;
+}
+
+.sticky-bar img {
+  height: 100%;
+}
+
+.search-bar {
+  padding: 15px;
+  border-bottom: 1px solid gray;
+  display: flex;
+  margin-bottom: 15px;
+}
+.search-bar input {
+  flex: 1;
+}
+
+.table-row {
+  display: flex;
+  margin-bottom: 10px;
+  border-bottom: 1px solid gray;
+  padding: 10px;
+}
+.table-header {
+  font-weight: bold;
+  border: none;
+  /* margin-bottom: 20px; */
+}
+.table-row > div:not(:first-child) {
+  flex: 1;
+}
+.table-row > div:first-child {
+  width: 45px;
+}
