@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { User } from "../common/models/user";
 import { fetchUsers } from "./thunk";
 
@@ -6,25 +6,33 @@ export interface AppState {
   loading: boolean;
   error: boolean;
   users: User[];
+  rawUsers: User[];
 }
 
 const initialState: AppState = {
   loading: false,
   error: false,
   users: [],
+  rawUsers: [],
 };
 
 export const AppSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    loadDataSuccess: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-      //   state.value += 1;
-      state.loading = false;
+    sortByName: (state) => {},
+    sortByAge: (state) => {
+      state.users = [...state.users].sort((a, b) => {
+        return a.age - b.age;
+      });
+    },
+    filterByAge: (
+      state,
+      { payload }: PayloadAction<{ min: number; max: number }>
+    ) => {
+      state.users = state.rawUsers.filter(
+        (user) => user.age >= payload.min && user.age <= payload.max
+      );
     },
   },
   extraReducers: (builder) => {
@@ -35,7 +43,18 @@ export const AppSlice = createSlice({
     });
     builder.addCase(fetchUsers.fulfilled, (state, { payload }) => {
       state.loading = false;
-      state.users = payload;
+      state.users = payload
+        .sort((a, b) => {
+          if (a.name.firstName > b.name.firstName) {
+            return 1;
+          }
+          if (a.name.firstName < b.name.firstName) {
+            return -1;
+          }
+          return a.age < b.age ? 1 : -1;
+        })
+        .filter((v) => !!v);
+      state.rawUsers = [...state.users];
     });
     builder.addCase(fetchUsers.rejected, (state, { payload }) => {
       state.loading = false;
@@ -53,6 +72,6 @@ export const AppSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { loadDataSuccess } = AppSlice.actions;
+export const { sortByAge, filterByAge } = AppSlice.actions;
 
 export default AppSlice.reducer;

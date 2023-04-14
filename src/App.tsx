@@ -1,10 +1,9 @@
 import React, { Dispatch, FocusEvent, useState } from "react";
 import { connect } from "react-redux";
-import { AppState } from "./store/reducer";
+import { AppState, filterByAge, sortByAge } from "./store/reducer";
 import { RootState } from "./store/store";
 import { fetchUsers } from "./store/thunk";
 
-const API_URL = "http://localhost:8099";
 export interface AgeFilter {
   min: number;
   max: number;
@@ -20,6 +19,14 @@ function AppComponent({ users, dispatch }: AppProps) {
   function retrieveUsers() {
     dispatch(fetchUsers(ageFilter));
   }
+
+  function sortAge() {
+    dispatch(sortByAge());
+  }
+
+  function filterAge() {
+    dispatch(filterByAge(ageFilter));
+  }
   console.log(users);
   return (
     <>
@@ -31,8 +38,17 @@ function AppComponent({ users, dispatch }: AppProps) {
         <div className="container">
           <h2>Users</h2>
           <div className="col-layout">
-            <div className="col-2 box">
-              <div className="filter-container">
+            <div className="col-2 ">
+              <div className="filter-container box">
+                <button
+                  type="button"
+                  onClick={retrieveUsers}
+                  style={{ alignSelf: "flex-start" }}
+                >
+                  Retrieve users
+                </button>
+              </div>
+              <div className="filter-container box">
                 <input
                   name="minAge"
                   value={ageFilter.min}
@@ -51,7 +67,7 @@ function AppComponent({ users, dispatch }: AppProps) {
                 />
                 <button
                   type="button"
-                  onClick={retrieveUsers}
+                  onClick={filterAge}
                   style={{ alignSelf: "flex-start" }}
                 >
                   Filter by age
@@ -68,7 +84,7 @@ function AppComponent({ users, dispatch }: AppProps) {
                   Name
                   <img src="sort-arrows.svg" />
                 </div>
-                <div>
+                <div id="table-sort-age" onClick={() => sortAge()}>
                   Age <img src="sort-arrows.svg" />
                 </div>
               </div>

@@ -30,6 +30,10 @@ body {
   padding: 20px;
 }
 
+.box + .box {
+  margin-top: 15px;
+}
+
 .col-layout {
   display: flex;
   gap: 20px;
