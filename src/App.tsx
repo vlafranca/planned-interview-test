@@ -1,8 +1,26 @@
-import React from "react";
+import React, { Dispatch, FocusEvent, useState } from "react";
+import { connect } from "react-redux";
+import { AppState } from "./store/reducer";
+import { RootState } from "./store/store";
+import { fetchUsers } from "./store/thunk";
 
 const API_URL = "http://localhost:8099";
+export interface AgeFilter {
+  min: number;
+  max: number;
+}
 
-function App() {
+function AppComponent({ users, dispatch }: AppProps) {
+  const [ageFilter, setAgeFilter] = useState<AgeFilter>({ min: 0, max: 100 });
+  const setMin = (event: FocusEvent<any>) =>
+    setAgeFilter({ ...ageFilter, min: event.target.value });
+  const setMax = (event: FocusEvent<any>) =>
+    setAgeFilter({ ...ageFilter, max: event.target.value });
+
+  function retrieveUsers() {
+    dispatch(fetchUsers(ageFilter));
+  }
+  console.log(users);
   return (
     <>
       <div className="sticky-bar">
@@ -15,9 +33,27 @@ function App() {
           <div className="col-layout">
             <div className="col-2 box">
               <div className="filter-container">
-                <input name="minAge" value="0" type="number" />
-                <input name="maxAge" value="100" type="number" />
-                <button type="button" style={{ alignSelf: "flex-start" }}>
+                <input
+                  name="minAge"
+                  value={ageFilter.min}
+                  onChange={setMin}
+                  type="number"
+                  min={0}
+                  max={99}
+                />
+                <input
+                  name="maxAge"
+                  max={100}
+                  min={1}
+                  value={ageFilter.max}
+                  onChange={setMax}
+                  type="number"
+                />
+                <button
+                  type="button"
+                  onClick={retrieveUsers}
+                  style={{ alignSelf: "flex-start" }}
+                >
                   Filter by age
                 </button>
               </div>
@@ -36,13 +72,18 @@ function App() {
                   Age <img src="sort-arrows.svg" />
                 </div>
               </div>
-              <div className="table-row">
-                <div>
-                  <input type="checkbox" />
+              {!users.length && <div>No result</div>}
+              {users.map((user, i) => (
+                <div className="table-row" key={i}>
+                  <div>
+                    <input type="checkbox" />
+                  </div>
+                  <div>
+                    {user.name.firstName} {user.name.lastName}
+                  </div>
+                  <div>{user.age}</div>
                 </div>
-                <div>Name</div>
-                <div>Truc</div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
@@ -51,4 +92,10 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = (state: RootState): AppState => state.app;
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+  dispatch,
+});
+type AppProps = AppState & ReturnType<typeof mapDispatchToProps>;
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppComponent);
