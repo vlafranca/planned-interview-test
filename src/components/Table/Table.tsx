@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { connect } from "react-redux";
 import { User } from "../../common/models/user";
-import { sortByAge, sortByName } from "../../store/reducer";
+import { sortByAgeAction, sortByNameAction } from "../../store/reducer";
 import { RootState } from "../../store/store";
 import Input from "../common/Input/Input";
 import SortHeaderCol from "../common/SortHeaderCol/SortHeaderCol";
@@ -34,11 +34,11 @@ const ResultTable: FC<TableProps & ReturnType<typeof mapDispatchToProps>> = ({
   }, [users]);
 
   function sortAge() {
-    dispatch(sortByAge());
+    dispatch(sortByAgeAction());
   }
 
   function sortName() {
-    dispatch(sortByName());
+    dispatch(sortByNameAction());
   }
 
   function filterResults(event: ChangeEvent<HTMLInputElement>) {
@@ -46,8 +46,14 @@ const ResultTable: FC<TableProps & ReturnType<typeof mapDispatchToProps>> = ({
       setFilteredUsers(users);
     } else {
       setFilteredUsers(
-        filteredUsers.filter((user) =>
-          user.name.firstName.toLowerCase().startsWith(event.target.value)
+        filteredUsers.filter(
+          (user) =>
+            user.name.firstName
+              .toLowerCase()
+              .startsWith(event.target.value.toLowerCase()) ||
+            user.name.lastName
+              .toLowerCase()
+              .startsWith(event.target.value.toLowerCase())
         )
       );
     }

@@ -33,11 +33,11 @@ export const AppSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    sortByName: (state) => {
+    sortByNameAction: (state) => {
       state.sorting.name = invertSortingOrder(state.sorting.name);
       state.users = sortUsersByNameWithAge(state.rawUsers, state.sorting.name);
     },
-    sortByAge: (state) => {
+    sortByAgeAction: (state) => {
       state.sorting.age = invertSortingOrder(state.sorting.age);
       state.users = sortUsersByAge(state.rawUsers, state.sorting.age);
     },
@@ -64,7 +64,7 @@ export const AppSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { sortByAge, sortByName } = AppSlice.actions;
+export const { sortByAgeAction, sortByNameAction } = AppSlice.actions;
 
 export default AppSlice.reducer;
 
