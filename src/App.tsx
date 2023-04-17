@@ -23,6 +23,17 @@ const PageTitle = styled.h1`
   margin: 2rem 0;
 `;
 
+const StickyBar = styled.div`
+  position: fixed;
+  top: 0;
+  height: 64px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: white;
+`;
+
 function AppComponent({ dispatch }: AppProps) {
   const [ageFilter, setAgeFilter] = useState<AgeFilter>({ min: 0, max: 100 });
   const setMin = (event: FocusEvent<any>) =>
@@ -36,15 +47,15 @@ function AppComponent({ dispatch }: AppProps) {
 
   return (
     <>
-      <div className="sticky-bar">
-        <img src="/logo.svg" />
+      <StickyBar>
+        <img className="h-full" src="/logo.svg" />
         <HeaderTitle>Planned Test</HeaderTitle>
-      </div>
+      </StickyBar>
       <div className="App">
         <div className="container">
           <PageTitle>Users</PageTitle>
           <div className="col-layout">
-            <div className="col-2 ">
+            <div className="w-full md:w-1/3">
               <Card className="filter-container p-6">
                 <Input
                   name="minAge"
@@ -65,7 +76,7 @@ function AppComponent({ dispatch }: AppProps) {
                 <Button onClick={retrieveUsers}>Retrieve users</Button>
               </Card>
             </div>
-            <Card className="col-3">
+            <Card className="flex-1">
               <ResultTable></ResultTable>
             </Card>
           </div>

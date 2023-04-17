@@ -61,14 +61,14 @@ const ResultTable: FC<TableProps & ReturnType<typeof mapDispatchToProps>> = ({
 
   return (
     <TableWrapper>
-      <div className="search-bar p-6">
+      <TableRow className="p-6">
         <Input
           ref={inputRef}
           onChange={filterResults}
           type="text"
           placeholder="Search user"
         />
-      </div>
+      </TableRow>
       <TableRow className="table-header p-3 pr-6 pl-6">
         <div></div>
         <SortHeaderCol onClick={sortName}>Name</SortHeaderCol>

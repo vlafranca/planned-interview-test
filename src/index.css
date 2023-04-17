@@ -17,7 +17,7 @@ body {
 }
 
 .container {
-  width: 860px;
+  max-width: 1020px;
   height: 100%;
   margin-top: 15px;
 }
@@ -28,47 +28,8 @@ body {
   gap: 15px;
 }
 
-.card + .card {
-  margin-top: 15px;
-}
-
 .col-layout {
   display: flex;
   gap: 20px;
-}
-
-.col-2 {
-  width: 33%;
-}
-
-.col-3 {
-  flex: 1;
-}
-
-.sticky-bar {
-  position: fixed;
-  top: 0;
-  height: 64px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background-color: white;
-}
-
-.sticky-bar img {
-  height: 100%;
-}
-
-.search-bar {
-  border-bottom: 1px solid gray;
-  display: flex;
-  margin-bottom: 15px;
-}
-.search-bar input {
-  flex: 1;
-}
-.table-header {
-  font-weight: bold;
-  border: none;
+  flex-wrap: wrap;
 }
