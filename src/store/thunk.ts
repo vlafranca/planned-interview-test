@@ -5,21 +5,20 @@ import { User, UserResponse } from "../common/models/user";
 
 const API_URL = "http://localhost:8099";
 
-export const fetchUsers = createAsyncThunk<User[], AgeFilter>(
-  "fetchUsers",
-  async (ageFilter: AgeFilter) => {
-    const response = await Promise.all([
-      axios.get<UserResponse>(
-        `${API_URL}/users/kids?ageMin=${ageFilter.min}&ageMax=${ageFilter.max}`
-      ),
-      axios.get<UserResponse>(
-        `${API_URL}/users/adults?ageMin=${ageFilter.min}&ageMax=${ageFilter.max}`
-      ),
-      axios.get<UserResponse>(
-        `${API_URL}/users/seniors?ageMin=${ageFilter.min}&ageMax=${ageFilter.max}`
-      ),
-    ]);
+export const fetchUsers = createAsyncThunk<
+  { users: User[]; ageFilter: AgeFilter },
+  AgeFilter
+>("fetchUsers", async (ageFilter: AgeFilter) => {
+  const response = await Promise.all([
+    axios.get<UserResponse>(`${API_URL}/users/kids`),
+    axios.get<UserResponse>(`${API_URL}/users/adults`),
+    axios.get<UserResponse>(`${API_URL}/users/seniors`),
+  ]);
 
-    return response.flatMap((resp) => resp.data.data) as User[];
-  }
-);
+  return {
+    ageFilter,
+    users: response
+      .flatMap((resp) => resp.data.data)
+      .filter((v) => !!v) as User[],
+  };
+});

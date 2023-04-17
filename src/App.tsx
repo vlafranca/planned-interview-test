@@ -5,7 +5,7 @@ import ResultTable from "./components/Table/Table";
 import Button from "./components/common/Button/Button";
 import Card from "./components/common/Card/Card";
 import Input from "./components/common/Input/Input";
-import { AppState, filterByAge } from "./store/reducer";
+import { AppState } from "./store/reducer";
 import { fetchUsers } from "./store/thunk";
 
 export interface AgeFilter {
@@ -34,10 +34,6 @@ function AppComponent({ dispatch }: AppProps) {
     dispatch(fetchUsers(ageFilter));
   }
 
-  function filterAge() {
-    dispatch(filterByAge(ageFilter));
-  }
-
   return (
     <>
       <div className="sticky-bar">
@@ -49,9 +45,6 @@ function AppComponent({ dispatch }: AppProps) {
           <PageTitle>Users</PageTitle>
           <div className="col-layout">
             <div className="col-2 ">
-              <Card className="filter-container p-6">
-                <Button onClick={retrieveUsers}>Retrieve users</Button>
-              </Card>
               <Card className="filter-container p-6">
                 <Input
                   name="minAge"
@@ -69,7 +62,7 @@ function AppComponent({ dispatch }: AppProps) {
                   onChange={setMax}
                   type="number"
                 />
-                <Button onClick={filterAge}>Filter by age</Button>
+                <Button onClick={retrieveUsers}>Retrieve users</Button>
               </Card>
             </div>
             <Card className="col-3">
@@ -82,7 +75,6 @@ function AppComponent({ dispatch }: AppProps) {
   );
 }
 
-// const mapStateToProps = (state: RootState): AppState => state.app;
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   dispatch,
 });

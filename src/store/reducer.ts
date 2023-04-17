@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { User } from "../common/models/user";
 import { fetchUsers } from "./thunk";
 
@@ -41,14 +41,6 @@ export const AppSlice = createSlice({
       state.sorting.age = invertSortingOrder(state.sorting.age);
       state.users = sortUsersByAge(state.rawUsers, state.sorting.age);
     },
-    filterByAge: (
-      state,
-      { payload }: PayloadAction<{ min: number; max: number }>
-    ) => {
-      state.users = state.rawUsers.filter(
-        (user) => user.age >= payload.min && user.age <= payload.max
-      );
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUsers.pending, (state, { payload }) => {
@@ -57,8 +49,12 @@ export const AppSlice = createSlice({
     });
     builder.addCase(fetchUsers.fulfilled, (state, { payload }) => {
       state.loading = false;
-      state.users = sortUsersByNameWithAge(payload, state.sorting.name);
-      state.rawUsers = [...state.users];
+      const truncatedusers = payload.users.filter(
+        (user) =>
+          user.age >= payload.ageFilter.min && user.age <= payload.ageFilter.max
+      );
+      state.users = sortUsersByNameWithAge(truncatedusers, state.sorting.name);
+      state.rawUsers = [...truncatedusers];
     });
     builder.addCase(fetchUsers.rejected, (state, { payload }) => {
       state.loading = false;
@@ -68,7 +64,7 @@ export const AppSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { sortByAge, sortByName, filterByAge } = AppSlice.actions;
+export const { sortByAge, sortByName } = AppSlice.actions;
 
 export default AppSlice.reducer;
 
