@@ -1,8 +1,16 @@
-import React, { Dispatch, FC } from "react";
+import React, {
+  ChangeEvent,
+  Dispatch,
+  FC,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { connect } from "react-redux";
 import { User } from "../../common/models/user";
 import { sortByAge, sortByName } from "../../store/reducer";
 import { RootState } from "../../store/store";
+import Input from "../common/Input/Input";
 import SortHeaderCol from "../common/SortHeaderCol/SortHeaderCol";
 import TableRow from "../common/TableRow/TableRow";
 import { TableWrapper } from "./Table.styled";
@@ -15,6 +23,17 @@ const ResultTable: FC<TableProps & ReturnType<typeof mapDispatchToProps>> = ({
   users,
   dispatch,
 }) => {
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setFilteredUsers(users);
+    console.log(inputRef);
+    if (inputRef?.current) {
+      inputRef.current.value = "";
+    }
+  }, [users]);
+
   function sortAge() {
     dispatch(sortByAge());
   }
@@ -22,8 +41,25 @@ const ResultTable: FC<TableProps & ReturnType<typeof mapDispatchToProps>> = ({
   function sortName() {
     dispatch(sortByName());
   }
+
+  function filterResults(event: ChangeEvent<HTMLInputElement>) {
+    setFilteredUsers(
+      filteredUsers.filter((user) =>
+        user.name.firstName.toLowerCase().startsWith(event.target.value)
+      )
+    );
+  }
+
   return (
     <TableWrapper>
+      <div className="search-bar p-6">
+        <Input
+          ref={inputRef}
+          onChange={filterResults}
+          type="text"
+          placeholder="Search user"
+        />
+      </div>
       <TableRow className="table-header p-3 pr-6 pl-6">
         <div></div>
         <SortHeaderCol onClick={sortName}>Name</SortHeaderCol>
@@ -31,8 +67,10 @@ const ResultTable: FC<TableProps & ReturnType<typeof mapDispatchToProps>> = ({
           Age
         </SortHeaderCol>
       </TableRow>
-      {!users.length && <div className="w-100 p-2 text-center">No result</div>}
-      {users.map((user, i) => (
+      {!filteredUsers.length && (
+        <div className="w-100 p-2 text-center">No result</div>
+      )}
+      {filteredUsers.map((user, i) => (
         <TableRow className="p-3 pr-6 pl-6" key={i}>
           <div>
             <input type="checkbox" />

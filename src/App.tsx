@@ -73,9 +73,6 @@ function AppComponent({ dispatch }: AppProps) {
               </Card>
             </div>
             <Card className="col-3">
-              <div className="search-bar p-6">
-                <Input type="text" placeholder="Search user" />
-              </div>
               <ResultTable></ResultTable>
             </Card>
           </div>
