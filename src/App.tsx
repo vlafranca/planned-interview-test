@@ -20,7 +20,7 @@ const HeaderTitle = styled.h1`
 const PageTitle = styled.h1`
   font-size: 26px;
   font-weight: bold;
-  margin: 2rem 0;
+  margin-bottom: 2rem;
 `;
 
 const StickyBar = styled.div`
