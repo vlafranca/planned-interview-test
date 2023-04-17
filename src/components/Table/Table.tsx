@@ -28,7 +28,6 @@ const ResultTable: FC<TableProps & ReturnType<typeof mapDispatchToProps>> = ({
 
   useEffect(() => {
     setFilteredUsers(users);
-    console.log(inputRef);
     if (inputRef?.current) {
       inputRef.current.value = "";
     }
@@ -43,11 +42,15 @@ const ResultTable: FC<TableProps & ReturnType<typeof mapDispatchToProps>> = ({
   }
 
   function filterResults(event: ChangeEvent<HTMLInputElement>) {
-    setFilteredUsers(
-      filteredUsers.filter((user) =>
-        user.name.firstName.toLowerCase().startsWith(event.target.value)
-      )
-    );
+    if (!event.target.value) {
+      setFilteredUsers(users);
+    } else {
+      setFilteredUsers(
+        filteredUsers.filter((user) =>
+          user.name.firstName.toLowerCase().startsWith(event.target.value)
+        )
+      );
+    }
   }
 
   return (
