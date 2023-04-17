@@ -1,6 +1,6 @@
 import React, { Dispatch, FocusEvent, useState } from "react";
 import { connect } from "react-redux";
-import { AppState, filterByAge, sortByAge } from "./store/reducer";
+import { AppState, filterByAge, sortByAge, sortByName } from "./store/reducer";
 import { RootState } from "./store/store";
 import { fetchUsers } from "./store/thunk";
 
@@ -22,6 +22,10 @@ function AppComponent({ users, dispatch }: AppProps) {
 
   function sortAge() {
     dispatch(sortByAge());
+  }
+
+  function sortName() {
+    dispatch(sortByName());
   }
 
   function filterAge() {
@@ -80,7 +84,7 @@ function AppComponent({ users, dispatch }: AppProps) {
               </div>
               <div className="table-row table-header">
                 <div></div>
-                <div>
+                <div onClick={sortName}>
                   Name
                   <img src="sort-arrows.svg" />
                 </div>

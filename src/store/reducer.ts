@@ -2,10 +2,19 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { User } from "../common/models/user";
 import { fetchUsers } from "./thunk";
 
+export enum SortingOrder {
+  ASC = "ASC",
+  DSC = "DSC",
+}
+
 export interface AppState {
   loading: boolean;
   error: boolean;
   users: User[];
+  sorting: {
+    age: SortingOrder;
+    name: SortingOrder;
+  };
   rawUsers: User[];
 }
 
@@ -13,6 +22,10 @@ const initialState: AppState = {
   loading: false,
   error: false,
   users: [],
+  sorting: {
+    age: SortingOrder.DSC,
+    name: SortingOrder.ASC,
+  },
   rawUsers: [],
 };
 
@@ -20,11 +33,13 @@ export const AppSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    sortByName: (state) => {},
+    sortByName: (state) => {
+      state.sorting.name = invertSortingOrder(state.sorting.name);
+      state.users = sortUsersByNameWithAge(state.rawUsers, state.sorting.name);
+    },
     sortByAge: (state) => {
-      state.users = [...state.users].sort((a, b) => {
-        return a.age - b.age;
-      });
+      state.sorting.age = invertSortingOrder(state.sorting.age);
+      state.users = sortUsersByAge(state.rawUsers, state.sorting.age);
     },
     filterByAge: (
       state,
@@ -36,42 +51,63 @@ export const AppSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // The `builder` callback form is used here because it provides correctly typed reducers from the action creators
     builder.addCase(fetchUsers.pending, (state, { payload }) => {
       state.loading = true;
       state.error = false;
     });
     builder.addCase(fetchUsers.fulfilled, (state, { payload }) => {
       state.loading = false;
-      state.users = payload
-        .sort((a, b) => {
-          if (a.name.firstName > b.name.firstName) {
-            return 1;
-          }
-          if (a.name.firstName < b.name.firstName) {
-            return -1;
-          }
-          return a.age < b.age ? 1 : -1;
-        })
-        .filter((v) => !!v);
+      state.users = sortUsersByNameWithAge(payload, state.sorting.name);
       state.rawUsers = [...state.users];
     });
     builder.addCase(fetchUsers.rejected, (state, { payload }) => {
       state.loading = false;
       state.error = true;
     });
-    // builder.addCase(updateUser.rejected, (state, action) => {
-    //   if (action.payload) {
-    //     // Being that we passed in ValidationErrors to rejectType in `createAsyncThunk`, the payload will be available here.
-    //     state.error = action.payload.errorMessage
-    //   } else {
-    //     state.error = action.error.message
-    //   }
-    // })
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { sortByAge, filterByAge } = AppSlice.actions;
+export const { sortByAge, sortByName, filterByAge } = AppSlice.actions;
 
 export default AppSlice.reducer;
+
+function sortUsersByNameWithAge(users: User[], sortingOrder: SortingOrder) {
+  const prefix = computeSortingPrefix(sortingOrder);
+
+  return users
+    .sort((a, b) => {
+      if (a.name.firstName > b.name.firstName) {
+        return 1 * prefix;
+      }
+      if (a.name.firstName < b.name.firstName) {
+        return -1 * prefix;
+      }
+      return a.age < b.age ? 1 : -1;
+    })
+    .filter((v) => !!v);
+}
+
+function sortUsersByAge(users: User[], sortingOrder: SortingOrder) {
+  const prefix = computeSortingPrefix(sortingOrder);
+
+  return users.sort((a, b) => {
+    if (a.age > b.age) {
+      return 1 * prefix;
+    }
+    if (a.age < b.age) {
+      return -1 * prefix;
+    }
+    return 0;
+  });
+}
+
+function invertSortingOrder(sortingOrder: SortingOrder) {
+  return sortingOrder === SortingOrder.ASC
+    ? SortingOrder.DSC
+    : SortingOrder.ASC;
+}
+
+function computeSortingPrefix(sortingOrder: SortingOrder) {
+  return sortingOrder === SortingOrder.ASC ? +1 : -1;
+}
