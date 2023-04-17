@@ -75,7 +75,7 @@ export default AppSlice.reducer;
 function sortUsersByNameWithAge(users: User[], sortingOrder: SortingOrder) {
   const prefix = computeSortingPrefix(sortingOrder);
 
-  return users
+  return [...users]
     .sort((a, b) => {
       if (a.name.firstName > b.name.firstName) {
         return 1 * prefix;
@@ -91,7 +91,7 @@ function sortUsersByNameWithAge(users: User[], sortingOrder: SortingOrder) {
 function sortUsersByAge(users: User[], sortingOrder: SortingOrder) {
   const prefix = computeSortingPrefix(sortingOrder);
 
-  return users.sort((a, b) => {
+  return [...users].sort((a, b) => {
     if (a.age > b.age) {
       return 1 * prefix;
     }

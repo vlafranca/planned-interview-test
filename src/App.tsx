@@ -1,7 +1,11 @@
 import React, { Dispatch, FocusEvent, useState } from "react";
 import { connect } from "react-redux";
-import { AppState, filterByAge, sortByAge, sortByName } from "./store/reducer";
-import { RootState } from "./store/store";
+import styled from "styled-components";
+import ResultTable from "./components/Table/Table";
+import Button from "./components/common/Button/Button";
+import Card from "./components/common/Card/Card";
+import Input from "./components/common/Input/Input";
+import { AppState, filterByAge } from "./store/reducer";
 import { fetchUsers } from "./store/thunk";
 
 export interface AgeFilter {
@@ -9,7 +13,17 @@ export interface AgeFilter {
   max: number;
 }
 
-function AppComponent({ users, dispatch }: AppProps) {
+const HeaderTitle = styled.h1`
+  font-size: 22px;
+`;
+
+const PageTitle = styled.h1`
+  font-size: 26px;
+  font-weight: bold;
+  margin: 2rem 0;
+`;
+
+function AppComponent({ dispatch }: AppProps) {
   const [ageFilter, setAgeFilter] = useState<AgeFilter>({ min: 0, max: 100 });
   const setMin = (event: FocusEvent<any>) =>
     setAgeFilter({ ...ageFilter, min: event.target.value });
@@ -20,40 +34,26 @@ function AppComponent({ users, dispatch }: AppProps) {
     dispatch(fetchUsers(ageFilter));
   }
 
-  function sortAge() {
-    dispatch(sortByAge());
-  }
-
-  function sortName() {
-    dispatch(sortByName());
-  }
-
   function filterAge() {
     dispatch(filterByAge(ageFilter));
   }
-  console.log(users);
+
   return (
     <>
       <div className="sticky-bar">
         <img src="/logo.svg" />
-        <h1>Planned Test</h1>
+        <HeaderTitle>Planned Test</HeaderTitle>
       </div>
       <div className="App">
         <div className="container">
-          <h2>Users</h2>
+          <PageTitle>Users</PageTitle>
           <div className="col-layout">
             <div className="col-2 ">
-              <div className="filter-container box">
-                <button
-                  type="button"
-                  onClick={retrieveUsers}
-                  style={{ alignSelf: "flex-start" }}
-                >
-                  Retrieve users
-                </button>
-              </div>
-              <div className="filter-container box">
-                <input
+              <Card className="filter-container p-6">
+                <Button onClick={retrieveUsers}>Retrieve users</Button>
+              </Card>
+              <Card className="filter-container p-6">
+                <Input
                   name="minAge"
                   value={ageFilter.min}
                   onChange={setMin}
@@ -61,7 +61,7 @@ function AppComponent({ users, dispatch }: AppProps) {
                   min={0}
                   max={99}
                 />
-                <input
+                <Input
                   name="maxAge"
                   max={100}
                   min={1}
@@ -69,42 +69,15 @@ function AppComponent({ users, dispatch }: AppProps) {
                   onChange={setMax}
                   type="number"
                 />
-                <button
-                  type="button"
-                  onClick={filterAge}
-                  style={{ alignSelf: "flex-start" }}
-                >
-                  Filter by age
-                </button>
-              </div>
+                <Button onClick={filterAge}>Filter by age</Button>
+              </Card>
             </div>
-            <div className="col-3 box">
-              <div className="search-bar">
-                <input type="text" placeholder="Search user" />
+            <Card className="col-3">
+              <div className="search-bar p-6">
+                <Input type="text" placeholder="Search user" />
               </div>
-              <div className="table-row table-header">
-                <div></div>
-                <div onClick={sortName}>
-                  Name
-                  <img src="sort-arrows.svg" />
-                </div>
-                <div id="table-sort-age" onClick={() => sortAge()}>
-                  Age <img src="sort-arrows.svg" />
-                </div>
-              </div>
-              {!users.length && <div>No result</div>}
-              {users.map((user, i) => (
-                <div className="table-row" key={i}>
-                  <div>
-                    <input type="checkbox" />
-                  </div>
-                  <div>
-                    {user.name.firstName} {user.name.lastName}
-                  </div>
-                  <div>{user.age}</div>
-                </div>
-              ))}
-            </div>
+              <ResultTable></ResultTable>
+            </Card>
           </div>
         </div>
       </div>
@@ -112,10 +85,10 @@ function AppComponent({ users, dispatch }: AppProps) {
   );
 }
 
-const mapStateToProps = (state: RootState): AppState => state.app;
+// const mapStateToProps = (state: RootState): AppState => state.app;
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   dispatch,
 });
 type AppProps = AppState & ReturnType<typeof mapDispatchToProps>;
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppComponent);
+export default connect(null, mapDispatchToProps)(AppComponent);
